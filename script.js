@@ -8,9 +8,10 @@ let inputSurname = document.querySelector('.surname');
 let inputTabNum = document.querySelector('.tab-number');
 let inputAge = document.querySelector('.age');
 let inputExp = document.querySelector('.drv-exp');
-let inputRank = document.querySelector('.rank-exp')
+let inputRank = document.querySelector('.rank-exp');
 let childrenCheckbox = document.getElementById('checkbox-child');
 let tableResult = document.getElementById('table-result');
+let allTextInput = document.querySelectorAll('input[type=text]');
 
 let tbody = document.getElementById('tbody');
 let saveBut = document.querySelector('.handler_btn');
@@ -46,7 +47,6 @@ class Workman {
                 app.masData.splice(index, 1);
             }
         });
-        console.log(app.masData);
         app.render();
     }
 }
@@ -57,6 +57,10 @@ class Driver extends Workman {
         this._className = 'Водитель';
         this._license = license;
         this._exp = exp;
+    }
+
+    deleteItem() {
+        super.deleteItem();
     }
     get license() {
         return this._license;
@@ -84,6 +88,9 @@ class Mech extends Workman {
         this._className = 'Механик';
         this._spec = spec;
         this._rank = rank;
+    }
+    deleteItem() {
+        super.deleteItem();
     }
     get spec() {
         return this._spec;
@@ -118,6 +125,8 @@ const app = {
         childrenCheckbox.addEventListener('change', this.onChangeChild.bind(this));
         selectSpec.addEventListener('change', this.onChangeSpec.bind(this));
         selectLicense.addEventListener('change', this.onChangeLicense.bind(this));
+        console.log(selectWorker.selectedIndex);
+
     },
     onChangeWorker: function () {
         if (this.firstShow == 1) {
@@ -135,10 +144,10 @@ const app = {
         }
     },
     onChangeLicense: function () {
-        selectLicense.removeChild(selectLicense.querySelector('[id="def"]'));
+        selectLicense.removeChild(selectLicense.querySelector('[value="def"]'));
     },
     onChangeSpec: function () {
-        selectSpec.removeChild(selectSpec.querySelector('[id="def"]'));
+        selectSpec.removeChild(selectSpec.querySelector('[value="def"]'));
     },
     onChangeChild: function () {
         this.isChild = childrenCheckbox.checked;
@@ -156,17 +165,56 @@ const app = {
         } else if (this.worker == 'mech') {
             const worker = new Mech(this.counter, inputName.value, inputSurname.value, inputTabNum.value, inputAge.value, this.isChild);
             worker.spec = selectSpec.options[selectSpec.selectedIndex].textContent;
-            worker.rank = inputExp.value;
+            worker.rank = inputRank.value;
+            this.counter++;
+            return worker;
+        }
+    },
+    buildObjectLocalStorage: function (obj) {
+        if (obj._className == 'Водитель') {
+            const worker = new Driver(this.counter, obj._name, obj._surname, obj._tabNumber, obj._age, obj._children);
+            worker.license = obj._license;
+            worker.exp = obj._exp;
+            this.counter++;
+            return worker;
+        } else if (obj._className == 'Механик') {
+            const worker = new Mech(this.counter, obj._name, obj._surname, obj._tabNumber, obj._age, obj._children);
+            worker.spec = obj._spec;
+            worker.rank = obj._rank;
             this.counter++;
             return worker;
         }
     },
     onSave: function () {
+        if (inputName.value !== '' && inputSurname.value !== '' && inputTabNum.value !== '' &&
+            inputAge.value !== '' && this.worker !== 'def') {
+            if (this.worker == 'driver') {
+                if (selectLicense.options[selectLicense.selectedIndex].value !== 'def' && inputExp.value !== '') {
+                    this.saveNewObject();
+                } else {
+                    alert('Заполните поля');
+                }
+            } else if (this.worker == 'mech') {
+                if (selectSpec.options[selectSpec.selectedIndex].value !== 'def' && inputRank.value !== '') {
+                    this.saveNewObject();
+                } else {
+                    alert('Заполните поля');
+                }
+            }
+        } else {
+            alert('Заполните поля');
+        }
+    },
+    saveNewObject: function () {
         const newWorker = this.buildObject();
         this.obj = newWorker;
         this.masData.push(newWorker);
-        console.log(this.masData);
         this.render();
+    },
+    resetInputs: function () {
+        allTextInput.forEach(element => {
+            element.value = '';
+        });
     },
     render: function () {
         tbody.innerHTML = '';
@@ -183,8 +231,7 @@ const app = {
             let age = document.createElement("td");
             age.appendChild(document.createTextNode(element.age));
             let children = document.createElement("td");
-            children.appendChild(document.createTextNode(element.children));
-
+            (element.children) ? children.appendChild(document.createTextNode('Да')) : children.appendChild(document.createTextNode('Нет'));
             row.appendChild(className);
             row.appendChild(name);
             row.appendChild(surname);
@@ -210,19 +257,27 @@ const app = {
             butRemove.appendChild(document.createTextNode('Удалить'));
             butRemove.classList.add('but-remove');
             let butTd = document.createElement("td");
-            butRemove.addEventListener('click', element.deleteItem.bind(element));
             console.log(element);
+            butRemove.addEventListener('click', element.deleteItem.bind(element));
             butTd.appendChild(butRemove);
             row.appendChild(butTd);
             tbody.appendChild(row);
         });
         localStorage.setItem('Data', JSON.stringify(this.masData));
+        this.resetInputs();
     }
 };
 
-
+// localStorage.clear();
 if (localStorage.getItem('Data')) {
+    let mas = [];
     app.masData = JSON.parse(localStorage.getItem('Data'));
+    app.masData.forEach(element => {
+        const worker = app.buildObjectLocalStorage(element);
+        mas.push(worker);
+    });
+    app.masData = [];
+    app.masData = app.masData.concat(mas);
     app.render();
 }
 
