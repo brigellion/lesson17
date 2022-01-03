@@ -12,7 +12,6 @@ let inputRank = document.querySelector('.rank-exp');
 let childrenCheckbox = document.getElementById('checkbox-child');
 let tableResult = document.getElementById('table-result');
 let allTextInput = document.querySelectorAll('input[type=text]');
-
 let tbody = document.getElementById('tbody');
 let saveBut = document.querySelector('.handler_btn');
 
@@ -125,8 +124,6 @@ const app = {
         childrenCheckbox.addEventListener('change', this.onChangeChild.bind(this));
         selectSpec.addEventListener('change', this.onChangeSpec.bind(this));
         selectLicense.addEventListener('change', this.onChangeLicense.bind(this));
-        console.log(selectWorker.selectedIndex);
-
     },
     onChangeWorker: function () {
         if (this.firstShow == 1) {
@@ -151,9 +148,6 @@ const app = {
     },
     onChangeChild: function () {
         this.isChild = childrenCheckbox.checked;
-    },
-    getFields: function () {
-
     },
     buildObject: function () {
         if (this.worker == 'driver') {
@@ -268,7 +262,7 @@ const app = {
     }
 };
 
-// localStorage.clear();
+
 if (localStorage.getItem('Data')) {
     let mas = [];
     app.masData = JSON.parse(localStorage.getItem('Data'));
