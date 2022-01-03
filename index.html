@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./style.css">
+    <title>DB workers</title>
+</head>
+
+<body>
+    <div class="form">
+        <select id="worker_select">
+            <option id="def">Выберите работника</option>
+            <option value="driver">Водитель</option>
+            <option value="mech">Мастер</option>
+        </select>
+
+        <div class='worker-options'>
+            <div class='name-surname'>
+                <input class='name' type="text" placeholder="Имя">
+                <input class='surname' type="text" placeholder="Фамилия">
+            </div>
+            <input class='tab-number' type="text" placeholder="Таб.№">
+            <input class='age' type="text" placeholder="Возраст">
+            <div class='childrens'>
+                <input class="custom-checkbox" type="checkbox" name="" id="checkbox-child">
+                <label for="checkbox-child">Дети</label>
+            </div>
+        </div>
+
+        <div class='driver-options' style="display: none;">
+            <select id="license_select">
+                <option id="def">Категория прав</option>
+                <option value="license-B">Кат.B</option>
+                <option value="license-C">Кат.С</option>
+                <option value="license-CE">Кат.С+Е</option>
+            </select>
+            <input class='drv-exp' type="text" placeholder="Стаж вождения, лет">
+        </div>
+
+        <div class='mech-options' style="display: none;">
+            <select id="spec_select">
+                <option id="def">Специализация</option>
+                <option value="engine">Двигатель</option>
+                <option value="chass">Шасси</option>
+                <option value="electric">Электрика</option>
+            </select>
+            <input class='rank-exp' type="text" placeholder="Разряд">
+        </div>
+
+        <div class="buttons">
+            <button class="handler_btn" id="save">Сохранить</button>
+            <!--<button class="handler_btn" id="delete">Удалить</button>-->
+        </div>
+
+
+    </div>
+    <table id='table_result'>
+        <tr>
+            <td>Профессия</td>
+            <td>Имя</td>
+            <td>Фамилия</td>
+            <td>Таб №</td>
+            <td>Возраст</td>
+            <td>Дети</td>
+            <td>Стаж/Разряд</td>
+            <td>Спец./Кат.прав</td>
+        </tr>
+        <tbody id='tbody'>
+
+        </tbody>
+    </table>
+    <script src='./script.js' defer></script>
+
+</body>
+
+</html>
