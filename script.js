@@ -222,7 +222,7 @@ const app = {
 
 
 if (localStorage.getItem('Data')) {
-    //app.masData = JSON.parse(localStorage.getItem('Data'));
+    app.masData = JSON.parse(localStorage.getItem('Data'));
     app.render();
 }
 
